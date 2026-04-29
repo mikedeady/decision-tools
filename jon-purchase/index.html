@@ -531,7 +531,7 @@
       <section class="hero">
         <p class="eyebrow">Jon Purchase Engine</p>
         <h1>What should Jon buy?</h1>
-        <p class="hero-copy">A guided decision tool for cars, skis, and bikes. Answer a few questions, then get a recommendation at the end.</p>
+        <p class="hero-copy">A guided decision tool for cars, skis, and bikes. Click through the questions and get a recommendation at the end.</p>
       </section>
 
       <section class="app-card">
@@ -616,9 +616,10 @@
           { id: "road", label: "Road fitness", desc: "Pavement speed and group rides." },
           { id: "bikepacking", label: "Bikepacking", desc: "Longer rides and carrying gear." },
           { id: "trail", label: "XC / light trail", desc: "Singletrack is part of the plan." },
+          { id: "rollover", label: "Fast rollover", desc: "Bigger wheels and speed sound interesting." },
           { id: "dream", label: "Dream bike", desc: "A long-term keeper matters." }
         ],
-        priorities: ["Ride quality", "Durability", "Craftsmanship", "Comfort", "Performance", "Timeless design"],
+        priorities: ["Ride quality", "Durability", "Craftsmanship", "Comfort", "Performance", "Rollover speed", "Timeless design"],
         options: [
           {
             name: "Moots Routt family",
@@ -635,11 +636,11 @@
             caveats: ["Less useful off pavement", "Narrower use case", "Still needs the right build"]
           },
           {
-            name: "Moots Womble / MXC / Mountaineer lane",
+            name: "Moots Womble / MXC",
             lane: "Mountain pick",
-            description: "The best fit if the actual use case is singletrack, XC, light trail riding, or a titanium mountain bike that stays cool forever.",
-            strengths: ["Best match for trail use", "Clearly distinct from a gravel bike", "Durable and special", "Strong enthusiast appeal"],
-            caveats: ["More maintenance", "Requires regular trail access", "Must match local terrain"]
+            description: "The best fit if the actual use case is singletrack, XC, light trail riding, or a titanium mountain bike that stays cool forever. If Jon wants the most interesting version of this answer, the MXC 32-inch wheel option is the one to pressure test.",
+            strengths: ["Correct match for trail and XC use", "Womble keeps the choice simple and playful", "MXC is the sharper cross-country answer", "The 32-inch wheel option adds the most Jon-specific intrigue"],
+            caveats: ["More maintenance than a gravel bike", "Requires regular trail access", "Must match local terrain and fit"]
           }
         ]
       }
@@ -711,6 +712,18 @@
       render();
     }
 
+    function selectSingle(collectionName, value, nextStep) {
+      state[collectionName] = [value];
+      render();
+      window.setTimeout(() => goToStep(nextStep), 220);
+    }
+
+    function selectStyle(value) {
+      state.style = value;
+      render();
+      window.setTimeout(() => goToStep(4), 220);
+    }
+
     function scoreOptions() {
       const data = selectedData();
       const combined = `${state.useCases.join(" ")} ${state.priorities.join(" ")} ${state.style || ""}`.toLowerCase();
@@ -727,13 +740,17 @@
         if (state.category === "skis" && option.name.includes("Wildcat") && /touring|mixed|versatility|travel|weight|playfulness|trees/.test(combined)) score += 20;
         if (state.category === "skis" && state.useCases.length === 0 && option.name.includes("Wildcat")) score += 2;
 
-        if (state.category === "bike" && option.name.includes("Routt") && /gravel|bikepacking|comfort|ride quality|dream|durability|timeless/.test(combined)) score += 20;
-        if (state.category === "bike" && option.name.includes("Vamoots") && /road|fitness|performance/.test(combined)) score += 20;
-        if (state.category === "bike" && /Womble|MXC|Mountaineer/.test(option.name) && /trail|xc/.test(combined)) score += 20;
+        if (state.category === "bike" && option.name.includes("Routt") && /gravel|bikepacking|comfort|ride quality/.test(combined)) score += 20;
+        if (state.category === "bike" && option.name.includes("Vamoots") && /road|fitness/.test(combined)) score += 20;
+        if (state.category === "bike" && /Womble|MXC/.test(option.name) && /trail|xc|rollover|singletrack/.test(combined)) score += 38;
+        if (state.category === "bike" && /Womble|MXC/.test(option.name) && /performance|dream|durability|timeless/.test(combined)) score += 10;
+        if (state.category === "bike" && /rollover|32/.test(combined) && /Womble|MXC/.test(option.name)) score += 16;
+        if (state.category === "bike" && /trail|xc|rollover|singletrack/.test(combined) && option.name.includes("Routt")) score -= 24;
+        if (state.category === "bike" && /trail|xc|rollover|singletrack/.test(combined) && option.name.includes("Vamoots")) score -= 30;
 
         if (state.style === "practical" && /durability|resale|versatile|comfort|long|low regret|utility/.test(`${combined} ${text}`)) score += 5;
         if (state.style === "balanced") score += 6;
-        if (state.style === "enthusiast" && /fun|special|forever|dream|moots|land cruiser|powder|playful/.test(`${combined} ${text}`)) score += 7;
+        if (state.style === "enthusiast" && /fun|special|forever|dream|moots|land cruiser|powder|playful|32|rollover|mxc/.test(`${combined} ${text}`)) score += 7;
 
         return {
           ...option,
@@ -771,9 +788,6 @@
       const left = document.createElement("div");
       left.className = "nav-left";
 
-      const right = document.createElement("div");
-      right.className = "nav-right";
-
       if (state.step > 0) {
         const back = document.createElement("button");
         back.type = "button";
@@ -795,26 +809,7 @@
       });
       left.appendChild(restart);
 
-      if (state.step < STEPS.length - 2) {
-        const next = document.createElement("button");
-        next.type = "button";
-        next.className = "btn btn-primary";
-        next.textContent = "Next";
-        next.disabled = !canContinue();
-        next.addEventListener("click", () => goToStep(state.step + 1));
-        right.appendChild(next);
-      } else if (state.step === STEPS.length - 2) {
-        const result = document.createElement("button");
-        result.type = "button";
-        result.className = "btn btn-primary";
-        result.textContent = "See recommendation";
-        result.disabled = !canContinue();
-        result.addEventListener("click", () => goToStep(STEPS.length - 1));
-        right.appendChild(result);
-      }
-
       nav.appendChild(left);
-      nav.appendChild(right);
       return nav;
     }
 
@@ -840,6 +835,7 @@
               resetAfterCategoryChange();
             }
             render();
+            window.setTimeout(() => goToStep(1), 220);
           }
         }));
       });
@@ -853,7 +849,7 @@
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
         <h2 class="step-title">How will he actually use it?</h2>
-        <p class="step-subtitle">Pick up to two. This keeps the recommendation tied to real use instead of imaginary perfect conditions.</p>
+        <p class="step-subtitle">Pick the primary use case. The next question will appear automatically.</p>
       `);
 
       const grid = document.createElement("div");
@@ -864,17 +860,10 @@
           desc: item.desc,
           emoji: "",
           selected: state.useCases.includes(item.id),
-          onClick: () => toggleMulti("useCases", item.id, 2)
+          onClick: () => selectSingle("useCases", item.id, 2)
         }));
       });
       quizContent.appendChild(grid);
-
-      if (state.useCases.length >= 2) {
-        const hint = document.createElement("p");
-        hint.className = "hint";
-        hint.textContent = "Two selected. Unselect one to choose a different use case.";
-        quizContent.appendChild(hint);
-      }
 
       quizContent.appendChild(renderNav());
     }
@@ -884,22 +873,15 @@
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
         <h2 class="step-title">What matters most?</h2>
-        <p class="step-subtitle">Pick up to three priorities. This is the practical filter.</p>
+        <p class="step-subtitle">Pick the priority that should carry the most weight. The next question will appear automatically.</p>
       `);
 
       const pills = document.createElement("div");
       pills.className = "pill-grid";
       data.priorities.forEach((priority) => {
-        pills.appendChild(createPill(priority, state.priorities.includes(priority), () => toggleMulti("priorities", priority, 3)));
+        pills.appendChild(createPill(priority, state.priorities.includes(priority), () => selectSingle("priorities", priority, 3)));
       });
       quizContent.appendChild(pills);
-
-      if (state.priorities.length >= 3) {
-        const hint = document.createElement("p");
-        hint.className = "hint";
-        hint.textContent = "Three selected. Unselect one to change the weighting.";
-        quizContent.appendChild(hint);
-      }
 
       quizContent.appendChild(renderNav());
     }
@@ -908,7 +890,7 @@
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
         <h2 class="step-title">What kind of decision is this?</h2>
-        <p class="step-subtitle">Choose the lens Jon is using. This changes how the same facts get weighted.</p>
+        <p class="step-subtitle">Choose the lens Jon is using. The reality-check question will appear automatically.</p>
       `);
 
       const grid = document.createElement("div");
@@ -919,10 +901,7 @@
           desc: option.desc,
           emoji: option.id === "practical" ? "📋" : option.id === "balanced" ? "⚖️" : "⚡",
           selected: state.style === option.id,
-          onClick: () => {
-            state.style = option.id;
-            render();
-          }
+          onClick: () => selectStyle(option.id)
         }));
       });
       quizContent.appendChild(grid);
@@ -933,7 +912,7 @@
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
         <h2 class="step-title">What is the current contender?</h2>
-        <p class="step-subtitle">Optional, but useful. Add whatever Jon is currently comparing against.</p>
+        <p class="step-subtitle">Optional, but useful. Add whatever Jon is currently comparing against, or skip straight to the recommendation.</p>
         <div class="input-wrap">
           <label class="input-label" for="alternativeInput">Current alternative</label>
           <input id="alternativeInput" placeholder="Example: Subaru Outback, QST 98, used gravel bike..." value="${escapeHtml(state.alternative)}" />
@@ -944,8 +923,58 @@
       input.addEventListener("input", (event) => {
         state.alternative = event.target.value;
       });
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          goToStep(5);
+        }
+      });
 
-      quizContent.appendChild(renderNav());
+      const actions = document.createElement("div");
+      actions.className = "nav-row";
+
+      const left = document.createElement("div");
+      left.className = "nav-left";
+
+      const back = document.createElement("button");
+      back.type = "button";
+      back.className = "btn btn-secondary";
+      back.textContent = "Back";
+      back.addEventListener("click", () => goToStep(3));
+      left.appendChild(back);
+
+      const restart = document.createElement("button");
+      restart.type = "button";
+      restart.className = "btn btn-secondary";
+      restart.textContent = "Start over";
+      restart.addEventListener("click", () => {
+        state.step = 0;
+        state.category = null;
+        resetAfterCategoryChange();
+        render();
+      });
+      left.appendChild(restart);
+
+      const right = document.createElement("div");
+      right.className = "nav-right";
+
+      const skip = document.createElement("button");
+      skip.type = "button";
+      skip.className = "btn btn-secondary";
+      skip.textContent = "Skip";
+      skip.addEventListener("click", () => goToStep(5));
+      right.appendChild(skip);
+
+      const see = document.createElement("button");
+      see.type = "button";
+      see.className = "btn btn-primary";
+      see.textContent = "See recommendation";
+      see.addEventListener("click", () => goToStep(5));
+      right.appendChild(see);
+
+      actions.appendChild(left);
+      actions.appendChild(right);
+      quizContent.appendChild(actions);
     }
 
     function renderResultStep() {
