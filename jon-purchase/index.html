@@ -3,24 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jon Purchase Decision Tool</title>
+  <title>Jon’s Next Purchase</title>
   <style>
     :root {
-      --navy: #050816;
-      --navy-2: #0b1024;
-      --ink: #111827;
-      --muted: #667085;
-      --line: #d9e1ec;
-      --soft: #f5f7fb;
-      --card: #ffffff;
-      --accent: #2563eb;
-      --accent-soft: #eaf1ff;
-      --success: #16a34a;
-      --shadow: 0 22px 60px rgba(15, 23, 42, 0.12);
-      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
-      --radius-xl: 32px;
-      --radius-lg: 24px;
-      --radius-md: 16px;
+      --paper: #f3ecdf;
+      --paper-2: #fbf6ee;
+      --card: #fffaf2;
+      --ink: #202823;
+      --muted: #5f6f70;
+      --line: #dfd0bd;
+      --line-dark: #bda98f;
+      --accent: #253b35;
+      --accent-soft: #e7ddcf;
+      --shadow: 0 22px 55px rgba(61, 44, 27, 0.12);
+      --shadow-soft: 0 12px 28px rgba(61, 44, 27, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * {
@@ -34,11 +35,12 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--sans);
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 30%),
-        linear-gradient(180deg, #f8fafc 0%, #eef3f9 100%);
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(203, 186, 160, 0.36), transparent 36%),
+        linear-gradient(180deg, #f8f0e4 0%, var(--paper) 100%);
     }
 
     button,
@@ -54,78 +56,67 @@
     .page {
       width: 100%;
       min-height: 100vh;
-      padding: 22px 14px 40px;
+      padding: 26px 14px 34px;
     }
 
     .shell {
-      max-width: 980px;
+      max-width: 1060px;
       margin: 0 auto;
     }
 
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--radius-xl);
-      padding: clamp(28px, 5vw, 52px);
-      color: white;
-      background:
-        linear-gradient(135deg, rgba(37, 99, 235, 0.24), transparent 40%),
-        linear-gradient(135deg, var(--navy), var(--navy-2));
-      box-shadow: var(--shadow);
+    .brand-header {
+      text-align: center;
+      padding: 10px 10px 24px;
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -120px;
-      top: -120px;
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .eyebrow {
-      margin: 0 0 12px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 8px 18px;
+      border: 1px solid var(--line-dark);
+      border-radius: 999px;
+      background: rgba(255, 250, 242, 0.76);
+      color: var(--accent);
       font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.24em;
+      font-weight: 900;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #93c5fd;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
     }
 
     h1 {
-      position: relative;
-      z-index: 1;
-      margin: 0;
-      max-width: 780px;
-      font-size: clamp(38px, 7vw, 74px);
-      line-height: 0.92;
+      margin: 16px auto 0;
+      max-width: 920px;
+      font-family: var(--serif);
+      font-size: clamp(54px, 9vw, 104px);
+      line-height: 0.88;
       letter-spacing: -0.065em;
+      font-weight: 800;
+      color: var(--ink);
     }
 
     .hero-copy {
-      position: relative;
-      z-index: 1;
-      max-width: 620px;
-      margin: 20px 0 0;
-      font-size: 16px;
-      line-height: 1.7;
-      color: #dbeafe;
+      max-width: 760px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: clamp(15px, 2vw, 18px);
+      line-height: 1.6;
     }
 
     .app-card {
-      margin-top: 22px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      border-radius: var(--radius-xl);
-      background: rgba(255, 255, 255, 0.92);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(12px);
       overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 250, 242, 0.92);
+      box-shadow: var(--shadow);
     }
 
     .progress-wrap {
-      padding: 22px 24px 0;
+      padding: 24px 24px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 248, 238, 0.72);
     }
 
     .progress-meta {
@@ -134,45 +125,50 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 10px;
-      color: var(--muted);
+      color: #5b554d;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     .progress-track {
       width: 100%;
-      height: 10px;
+      height: 12px;
       overflow: hidden;
       border-radius: 999px;
-      background: #e8eef7;
+      background: #e5d9c8;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.74) inset;
     }
 
     .progress-bar {
       height: 100%;
       width: 0%;
       border-radius: 999px;
-      background: linear-gradient(90deg, #2563eb, #38bdf8);
-      transition: width 0.25s ease;
+      background: linear-gradient(90deg, #263a35, #73856f);
+      transition: width 0.24s ease;
     }
 
     .content {
-      padding: clamp(24px, 4vw, 40px);
+      padding: clamp(26px, 5vw, 48px);
     }
 
     .step-title {
+      max-width: 900px;
       margin: 0;
-      font-size: clamp(28px, 4vw, 44px);
-      line-height: 1;
+      font-family: var(--serif);
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: 0.95;
       letter-spacing: -0.055em;
-      color: #0f172a;
+      color: var(--ink);
     }
 
     .step-subtitle {
-      max-width: 680px;
-      margin: 14px 0 0;
+      max-width: 740px;
+      margin: 16px 0 0;
       color: var(--muted);
       font-size: 16px;
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
     .choice-grid {
@@ -187,78 +183,80 @@
     }
 
     .choice-card {
-      min-height: 148px;
+      min-height: 128px;
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
-      padding: 22px;
+      padding: 20px;
       text-align: left;
-      background: white;
+      background: #fffdf8;
       color: var(--ink);
-      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
-      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
     }
 
     .choice-card:hover {
       transform: translateY(-2px);
-      border-color: #9db4d3;
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+      border-color: var(--line-dark);
+      box-shadow: 0 16px 35px rgba(61, 44, 27, 0.12);
     }
 
     .choice-card.selected {
-      border-color: var(--navy);
-      background: var(--navy);
-      color: white;
-      box-shadow: 0 18px 38px rgba(2, 6, 23, 0.22);
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fffaf2;
+      box-shadow: 0 18px 38px rgba(32, 40, 35, 0.22);
     }
 
     .choice-emoji {
-      font-size: 30px;
-      line-height: 1;
-      margin-bottom: 18px;
+      display: none;
     }
 
     .choice-title {
-      font-weight: 850;
+      font-weight: 900;
       font-size: 18px;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.015em;
     }
 
     .choice-desc {
-      margin-top: 8px;
+      margin-top: 10px;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.55;
     }
 
     .choice-card.selected .choice-desc {
-      color: #cbd5e1;
+      color: #dfe8df;
     }
 
     .pill-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
       margin-top: 28px;
     }
 
     .pill {
+      min-height: 64px;
       border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 12px 16px;
-      color: #1f2937;
-      background: white;
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--ink);
+      background: #fffdf8;
+      box-shadow: var(--shadow-soft);
+      font-weight: 800;
       transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
     }
 
     .pill:hover {
       transform: translateY(-1px);
-      border-color: #9db4d3;
+      border-color: var(--line-dark);
     }
 
     .pill.selected {
-      border-color: var(--navy);
-      background: var(--navy);
-      color: white;
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fffaf2;
     }
 
     .input-wrap {
@@ -268,25 +266,28 @@
     .input-label {
       display: block;
       margin-bottom: 10px;
-      color: #344054;
-      font-size: 14px;
-      font-weight: 800;
+      color: #4c4740;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     input {
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
       padding: 16px 18px;
       color: var(--ink);
-      background: white;
+      background: #fffdf8;
       outline: none;
       font-size: 16px;
+      box-shadow: var(--shadow-soft);
     }
 
     input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      box-shadow: 0 0 0 4px rgba(37, 59, 53, 0.10);
     }
 
     .nav-row {
@@ -308,7 +309,8 @@
       border: 0;
       border-radius: 999px;
       padding: 13px 18px;
-      font-weight: 850;
+      font-weight: 900;
+      letter-spacing: 0.02em;
       transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
     }
 
@@ -322,15 +324,15 @@
     }
 
     .btn-primary {
-      background: var(--navy);
-      color: white;
-      box-shadow: 0 12px 24px rgba(2, 6, 23, 0.18);
+      background: var(--accent);
+      color: #fffaf2;
+      box-shadow: 0 12px 24px rgba(32, 40, 35, 0.18);
     }
 
     .btn-secondary {
       border: 1px solid var(--line);
-      background: white;
-      color: #344054;
+      background: #fffdf8;
+      color: #4c4740;
     }
 
     .hint {
@@ -349,27 +351,32 @@
 
     .result-card {
       border-radius: var(--radius-xl);
-      padding: 28px;
-      color: white;
+      padding: 30px;
+      color: #fffaf2;
       background:
-        linear-gradient(135deg, rgba(37, 99, 235, 0.28), transparent 44%),
-        linear-gradient(135deg, var(--navy), var(--navy-2));
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 32%),
+        linear-gradient(135deg, #202823, #34473d);
       box-shadow: var(--shadow-soft);
     }
 
     .result-label {
-      color: #93c5fd;
-      font-size: 13px;
-      font-weight: 850;
-      letter-spacing: 0.16em;
+      display: inline-flex;
+      border: 1px solid rgba(255, 250, 242, 0.34);
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: #f1e7d7;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
     }
 
     .result-name {
-      margin: 10px 0 8px;
-      font-size: clamp(34px, 6vw, 58px);
-      line-height: 0.95;
-      letter-spacing: -0.065em;
+      margin: 16px 0 10px;
+      font-family: var(--serif);
+      font-size: clamp(42px, 7vw, 74px);
+      line-height: 0.9;
+      letter-spacing: -0.06em;
     }
 
     .confidence {
@@ -378,17 +385,17 @@
       gap: 8px;
       border-radius: 999px;
       padding: 8px 12px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #dbeafe;
+      background: rgba(255, 250, 242, 0.12);
+      color: #efe4d3;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .result-copy {
-      margin: 18px 0 0;
-      color: #dbeafe;
+      margin: 20px 0 0;
+      color: #efe4d3;
       font-size: 15px;
-      line-height: 1.7;
+      line-height: 1.72;
     }
 
     .result-section {
@@ -397,9 +404,11 @@
 
     .result-section-title {
       margin-bottom: 10px;
-      font-size: 14px;
-      font-weight: 850;
-      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fffaf2;
     }
 
     ul {
@@ -409,29 +418,33 @@
 
     li {
       margin: 8px 0;
-      color: #dbeafe;
+      color: #efe4d3;
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
     .support-card {
       border: 1px solid var(--line);
       border-radius: var(--radius-xl);
       padding: 24px;
-      background: white;
+      background: #fffdf8;
+      box-shadow: var(--shadow-soft);
     }
 
     .support-title {
       margin: 0;
-      font-size: 20px;
-      letter-spacing: -0.03em;
+      font-family: var(--serif);
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.045em;
     }
 
     .compare-box {
       margin-top: 14px;
+      border: 1px solid #eadfce;
       border-radius: var(--radius-lg);
       padding: 18px;
-      background: var(--soft);
+      background: var(--paper-2);
     }
 
     .compare-name {
@@ -443,14 +456,14 @@
       margin-top: 4px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .compare-copy {
       margin: 12px 0 0;
-      color: #475467;
+      color: var(--muted);
       font-size: 14px;
-      line-height: 1.58;
+      line-height: 1.62;
     }
 
     textarea {
@@ -461,8 +474,8 @@
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
       padding: 14px;
-      color: #344054;
-      background: var(--soft);
+      color: #4c4740;
+      background: var(--paper-2);
       outline: none;
       font-size: 13px;
       line-height: 1.55;
@@ -475,16 +488,28 @@
       margin-top: 18px;
     }
 
+    .disclaimer {
+      max-width: 980px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
     .hidden {
       display: none !important;
     }
 
     @media (max-width: 780px) {
       .page {
-        padding: 12px 10px 28px;
+        padding: 14px 10px 28px;
       }
 
-      .hero,
+      .brand-header {
+        padding-bottom: 18px;
+      }
+
       .app-card,
       .result-card,
       .support-card {
@@ -492,15 +517,16 @@
       }
 
       .progress-wrap {
-        padding: 18px 18px 0;
+        padding: 18px 18px 16px;
       }
 
       .content {
-        padding: 22px 18px 26px;
+        padding: 24px 18px 28px;
       }
 
       .choice-grid,
       .choice-grid.two,
+      .pill-grid,
       .result-layout {
         grid-template-columns: 1fr;
       }
@@ -528,17 +554,17 @@
 <body>
   <main class="page">
     <div class="shell">
-      <section class="hero">
-        <p class="eyebrow">Jon Purchase Engine</p>
-        <h1>What should Jon buy?</h1>
-        <p class="hero-copy">A guided decision tool for cars, skis, and bikes. Click through the questions and get a recommendation at the end.</p>
+      <section class="brand-header">
+        <div class="badge">Purchase Fit Assessment</div>
+        <h1>Jon’s Next Purchase</h1>
+        <p class="hero-copy">A practical decision tool that evaluates capability, comfort, durability, long-term utility, and day-to-day fit across a short list of highly defensible options.</p>
       </section>
 
       <section class="app-card">
         <div class="progress-wrap">
           <div class="progress-meta">
-            <span id="stepCounter">Step 1 of 5</span>
-            <span id="stepLabel">Category</span>
+            <span id="stepCounter">Step 1 of 6</span>
+            <span id="stepLabel">Model V2.2</span>
           </div>
           <div class="progress-track">
             <div class="progress-bar" id="progressBar"></div>
@@ -547,22 +573,23 @@
 
         <div class="content" id="quizContent"></div>
       </section>
+
+      <p class="disclaimer">This tool is for directional fit assessment only. It does not replace test drives, demo days, budget math, or the emotional clarity that comes from seeing the correct option in a parking lot.</p>
     </div>
   </main>
 
   <script>
     const CATEGORY_DATA = {
       car: {
-        label: "Car",
-        icon: "🚙",
+        label: "Vehicle",
+        icon: "",
         useCases: [
-          { id: "daily", label: "Daily driver", desc: "Most miles are normal life miles." },
-          { id: "family", label: "Family hauler", desc: "People, dogs, gear, and errands." },
-          { id: "winter", label: "Ski / winter access", desc: "Bad weather confidence matters." },
-          { id: "roadtrip", label: "Road trips", desc: "Comfort and cargo over long distances." },
-          { id: "forever", label: "Keep it forever", desc: "Long-term durability matters most." }
+          { id: "daily", label: "Daily life with occasional adventure", desc: "Commuting, errands, weekend trips, snow days, and the occasional trailhead." },
+          { id: "family", label: "Long-term all-purpose family vehicle", desc: "A vehicle that can absorb changing needs over the next several years." },
+          { id: "winter", label: "Mountain, snow, travel, and gear hauling", desc: "A high-confidence vehicle for weather, distance, equipment, and imperfect roads." },
+          { id: "efficient", label: "Keep it simple and efficient", desc: "Lower cost, easier parking, better efficiency, and less vehicle than a full SUV." }
         ],
-        priorities: ["Reliability", "Capability", "Comfort", "Cargo space", "Resale value", "Low regret"],
+        priorities: ["Reliability profile", "Capability", "Comfort", "Cargo flexibility", "Resale logic", "Low regret"],
         options: [
           {
             name: "Toyota Land Cruiser",
@@ -582,13 +609,12 @@
       },
       skis: {
         label: "Skis",
-        icon: "🎿",
+        icon: "",
         useCases: [
-          { id: "powder", label: "Powder days", desc: "Soft snow is the point." },
-          { id: "resort", label: "Resort laps", desc: "Mostly lift-served skiing." },
-          { id: "trees", label: "Trees and playful lines", desc: "Quick pivots and fun matter." },
-          { id: "touring", label: "Touring", desc: "Weight and uphill use matter." },
-          { id: "mixed", label: "Mixed soft conditions", desc: "Needs to work beyond perfect days." }
+          { id: "powder", label: "Soft snow and powder days", desc: "The ski should feel worth owning when the mountain gets good." },
+          { id: "resort", label: "Resort laps and chop", desc: "Mostly lift-served skiing with variable soft conditions by afternoon." },
+          { id: "trees", label: "Trees and playful lines", desc: "Quick pivots, slashy turns, and a fun feel matter more than precision." },
+          { id: "touring", label: "Touring and travel", desc: "Weight, versatility, and uphill use matter more than pure resort power." }
         ],
         priorities: ["Float", "Playfulness", "Stability", "Touring weight", "Versatility", "Fun factor"],
         options: [
@@ -610,14 +636,12 @@
       },
       bike: {
         label: "Bike",
-        icon: "🚲",
+        icon: "",
         useCases: [
-          { id: "gravel", label: "Gravel", desc: "Dirt roads and mixed surfaces." },
-          { id: "road", label: "Road fitness", desc: "Pavement speed and group rides." },
-          { id: "bikepacking", label: "Bikepacking", desc: "Longer rides and carrying gear." },
-          { id: "trail", label: "XC / light trail", desc: "Singletrack is part of the plan." },
-          { id: "rollover", label: "Fast rollover", desc: "Bigger wheels and speed sound interesting." },
-          { id: "dream", label: "Dream bike", desc: "A long-term keeper matters." }
+          { id: "gravel", label: "Gravel and all-road riding", desc: "Mixed surfaces, long rides, dirt roads, and one bike that gets used often." },
+          { id: "road", label: "Road fitness and group rides", desc: "Pavement speed, comfort over distance, and a refined road feel." },
+          { id: "trail", label: "XC and light trail riding", desc: "Singletrack is part of the plan, so this should not be solved with a gravel bike." },
+          { id: "rollover", label: "Fast rollover and weird-bike intrigue", desc: "Bigger wheels, speed, and an option that feels more interesting than normal." }
         ],
         priorities: ["Ride quality", "Durability", "Craftsmanship", "Comfort", "Performance", "Rollover speed", "Timeless design"],
         options: [
@@ -626,7 +650,7 @@
             lane: "Gravel / all-road pick",
             description: "The best fit if Jon wants one premium titanium bike for gravel, all-road riding, long days, and a high use rate across mixed terrain.",
             strengths: ["Most versatile Moots lane", "Strong long-ride logic", "High use-rate potential", "Feels like a forever bike"],
-            caveats: ["Premium price", "Build spec matters", "Not a true mountain bike"]
+            caveats: ["Premium price", "Build spec matters", "Not a mountain bike"]
           },
           {
             name: "Moots Vamoots family",
@@ -647,18 +671,18 @@
     };
 
     const STEPS = [
-      { key: "category", label: "Category" },
-      { key: "use", label: "Use case" },
-      { key: "priorities", label: "Priorities" },
-      { key: "style", label: "Decision style" },
-      { key: "alternative", label: "Reality check" },
+      { key: "category", label: "Assessment Type" },
+      { key: "use", label: "Primary Job" },
+      { key: "priorities", label: "Fit Criteria" },
+      { key: "style", label: "Decision Lens" },
+      { key: "alternative", label: "Reality Check" },
       { key: "result", label: "Recommendation" }
     ];
 
     const STYLE_OPTIONS = [
-      { id: "practical", label: "Practical", desc: "Minimize regret, hassle, and wasted money." },
-      { id: "balanced", label: "Balanced", desc: "Let the fun answer win only if it is defensible." },
-      { id: "enthusiast", label: "Enthusiast", desc: "Prioritize the option he will still be excited about later." }
+      { id: "practical", label: "Practical fit", desc: "Minimize regret, hassle, and wasted money." },
+      { id: "balanced", label: "Balanced fit", desc: "Let the more interesting answer win only if it is defensible." },
+      { id: "enthusiast", label: "Long-term enthusiast fit", desc: "Prioritize the option he will still be excited about later." }
     ];
 
     const state = {
@@ -692,36 +716,31 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function canContinue() {
-      const current = STEPS[state.step].key;
-      if (current === "category") return Boolean(state.category);
-      if (current === "use") return state.useCases.length > 0;
-      if (current === "priorities") return state.priorities.length > 0;
-      if (current === "style") return Boolean(state.style);
-      return true;
-    }
-
-    function toggleMulti(collectionName, value, max) {
-      const collection = state[collectionName];
-      const index = collection.indexOf(value);
-      if (index >= 0) {
-        collection.splice(index, 1);
-      } else if (collection.length < max) {
-        collection.push(value);
-      }
-      render();
-    }
-
     function selectSingle(collectionName, value, nextStep) {
       state[collectionName] = [value];
       render();
-      window.setTimeout(() => goToStep(nextStep), 220);
+      window.setTimeout(() => goToStep(nextStep), 600);
+    }
+
+    function togglePriority(value) {
+      const index = state.priorities.indexOf(value);
+      if (index >= 0) {
+        state.priorities.splice(index, 1);
+      } else if (state.priorities.length < 3) {
+        state.priorities.push(value);
+      }
+
+      render();
+
+      if (state.priorities.length === 3) {
+        window.setTimeout(() => goToStep(3), 800);
+      }
     }
 
     function selectStyle(value) {
       state.style = value;
       render();
-      window.setTimeout(() => goToStep(4), 220);
+      window.setTimeout(() => goToStep(4), 600);
     }
 
     function scoreOptions() {
@@ -734,13 +753,13 @@
 
         if (state.category === "car" && option.name.includes("Land Cruiser")) score += 26;
         if (state.category === "car" && option.name.includes("Outback")) score += 4;
-        if (state.category === "car" && /forever|winter|capability|durability|reliability|resale|low regret|roadtrip|family/.test(combined) && option.name.includes("Land Cruiser")) score += 11;
+        if (state.category === "car" && /forever|winter|capability|durability|reliability|resale|low regret|roadtrip|family|mountain|snow|gear|utility/.test(combined) && option.name.includes("Land Cruiser")) score += 14;
+        if (state.category === "car" && /efficient/.test(combined) && option.name.includes("Outback")) score += 10;
 
         if (state.category === "skis" && option.name.includes("Black Ops") && /powder|resort|float|stability|fun|chop/.test(combined)) score += 20;
         if (state.category === "skis" && option.name.includes("Wildcat") && /touring|mixed|versatility|travel|weight|playfulness|trees/.test(combined)) score += 20;
-        if (state.category === "skis" && state.useCases.length === 0 && option.name.includes("Wildcat")) score += 2;
 
-        if (state.category === "bike" && option.name.includes("Routt") && /gravel|bikepacking|comfort|ride quality/.test(combined)) score += 20;
+        if (state.category === "bike" && option.name.includes("Routt") && /gravel|all-road|bikepacking|comfort|ride quality/.test(combined)) score += 20;
         if (state.category === "bike" && option.name.includes("Vamoots") && /road|fitness/.test(combined)) score += 20;
         if (state.category === "bike" && /Womble|MXC/.test(option.name) && /trail|xc|rollover|singletrack/.test(combined)) score += 38;
         if (state.category === "bike" && /Womble|MXC/.test(option.name) && /performance|dream|durability|timeless/.test(combined)) score += 10;
@@ -816,8 +835,8 @@
     function renderCategoryStep() {
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
-        <h2 class="step-title">What is Jon buying?</h2>
-        <p class="step-subtitle">Start with the category. The tool will adjust the questions from there.</p>
+        <h2 class="step-title">What type of decision is Jon making?</h2>
+        <p class="step-subtitle">Start with the purchase category. The assessment will adjust the criteria from there.</p>
       `);
 
       const grid = document.createElement("div");
@@ -826,7 +845,7 @@
       Object.entries(CATEGORY_DATA).forEach(([key, value]) => {
         grid.appendChild(createChoiceCard({
           title: value.label,
-          desc: key === "car" ? "Daily use, trips, weather, and ownership math." : key === "skis" ? "Snow conditions, terrain, and how often they will get used." : "Terrain, ride style, fit, and long-term ownership.",
+          desc: key === "car" ? "Capability, comfort, ownership cost, and long-term vehicle fit." : key === "skis" ? "Snow conditions, terrain, use frequency, and quiver fit." : "Terrain, ride quality, fit, and long-term ownership logic.",
           emoji: value.icon,
           selected: state.category === key,
           onClick: () => {
@@ -848,12 +867,12 @@
       const data = selectedData();
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
-        <h2 class="step-title">How will he actually use it?</h2>
-        <p class="step-subtitle">Pick the primary use case. The next question will appear automatically.</p>
+        <h2 class="step-title">What is the main job this needs to do?</h2>
+        <p class="step-subtitle">Start with the actual use case, not the badge, brand, or fantasy scenario.</p>
       `);
 
       const grid = document.createElement("div");
-      grid.className = "choice-grid";
+      grid.className = "choice-grid two";
       data.useCases.forEach((item) => {
         grid.appendChild(createChoiceCard({
           title: item.label,
@@ -865,6 +884,11 @@
       });
       quizContent.appendChild(grid);
 
+      const hint = document.createElement("p");
+      hint.className = "hint";
+      hint.textContent = "The assessment weighs both stated needs and likely future utility.";
+      quizContent.appendChild(hint);
+
       quizContent.appendChild(renderNav());
     }
 
@@ -872,17 +896,16 @@
       const data = selectedData();
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
-        <h2 class="step-title">What matters most?</h2>
-        <p class="step-subtitle">Pick the priority that should carry the most weight. The next question will appear automatically.</p>
+        <h2 class="step-title">Which factor should carry the most weight?</h2>
+        <p class="step-subtitle">Choose three criteria. The next question will appear automatically after the third selection.</p>
       `);
 
       const pills = document.createElement("div");
       pills.className = "pill-grid";
       data.priorities.forEach((priority) => {
-        pills.appendChild(createPill(priority, state.priorities.includes(priority), () => selectSingle("priorities", priority, 3)));
+        pills.appendChild(createPill(priority, state.priorities.includes(priority), () => togglePriority(priority)));
       });
       quizContent.appendChild(pills);
-
       quizContent.appendChild(renderNav());
     }
 
@@ -890,7 +913,7 @@
       quizContent.innerHTML = "";
       quizContent.insertAdjacentHTML("beforeend", `
         <h2 class="step-title">What kind of decision is this?</h2>
-        <p class="step-subtitle">Choose the lens Jon is using. The reality-check question will appear automatically.</p>
+        <p class="step-subtitle">Choose the lens Jon is using. This changes how the same facts get weighted.</p>
       `);
 
       const grid = document.createElement("div");
@@ -899,7 +922,7 @@
         grid.appendChild(createChoiceCard({
           title: option.label,
           desc: option.desc,
-          emoji: option.id === "practical" ? "📋" : option.id === "balanced" ? "⚖️" : "⚡",
+          emoji: "",
           selected: state.style === option.id,
           onClick: () => selectStyle(option.id)
         }));
@@ -989,7 +1012,7 @@
         `Recommendation: ${winner.name}`,
         `Fit score: ${winner.score}%`,
         useLabels.length ? `Primary use: ${useLabels.join(", ")}` : null,
-        state.priorities.length ? `Priorities: ${state.priorities.join(", ")}` : null,
+        state.priorities.length ? `Priority: ${state.priorities.join(", ")}` : null,
         state.style ? `Decision lens: ${STYLE_OPTIONS.find((item) => item.id === state.style)?.label}` : null,
         state.alternative ? `Current alternative: ${state.alternative}` : null,
         runnerUp ? `Compare against: ${runnerUp.name}` : null,
@@ -1051,7 +1074,7 @@
     function renderProgress() {
       const step = STEPS[state.step];
       stepCounter.textContent = `Step ${Math.min(state.step + 1, STEPS.length)} of ${STEPS.length}`;
-      stepLabel.textContent = step.label;
+      stepLabel.textContent = state.step === 0 ? "Model V2.2" : step.label;
       progressBar.style.width = `${((state.step + 1) / STEPS.length) * 100}%`;
     }
 
