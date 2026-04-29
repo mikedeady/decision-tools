@@ -1,9 +1,715 @@
-<a class="card" href="./jon-car/">
-  <h2>Jon’s Vehicle Fit Assessment</h2>
-  <p>A rigorous vehicle recommendation model with a suspiciously strong Land Cruiser outcome.</p>
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jon Purchase Engine</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --dark: #020617;
+      --dark-muted: #cbd5e1;
+      --soft: #f1f5f9;
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+    }
 
-<a class="card" href="./jon-purchase/">
-  <h2>Jon Purchase Decision Tool</h2>
-  <p>A practical tool for helping Jon decide what to buy, regardless of category.</p>
-</a>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--dark);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 48px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    header p:last-child {
+      max-width: 680px;
+      margin: 14px 0 0;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--dark-muted);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .subhead {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .category-btn,
+    .chip,
+    .clear-btn {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .category-btn:hover,
+    .chip:hover,
+    .clear-btn:hover {
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+
+    .category-btn {
+      text-align: left;
+      border-radius: var(--radius-md);
+      padding: 18px;
+      min-height: 120px;
+    }
+
+    .category-btn.active,
+    .chip.active {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: white;
+    }
+
+    .category-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .category-title {
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .category-result {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .category-btn.active .category-result {
+      color: var(--dark-muted);
+    }
+
+    .logic-block {
+      margin-top: 18px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 14px;
+    }
+
+    .clear-btn {
+      white-space: nowrap;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus {
+      border-color: #64748b;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .recommendation {
+      background: var(--dark);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .rec-label {
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .rec-name {
+      margin: 6px 0 4px;
+      font-size: clamp(30px, 5vw, 42px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .rec-meta {
+      color: var(--dark-muted);
+      font-size: 14px;
+    }
+
+    .rec-description {
+      margin: 18px 0 0;
+      color: var(--dark-muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .mini-title {
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin: 6px 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--dark-muted);
+    }
+
+    .side-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .compare-box {
+      background: var(--soft);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .compare-name {
+      font-weight: 800;
+    }
+
+    .compare-lane {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .compare-description {
+      margin: 12px 0 0;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    textarea {
+      width: 100%;
+      height: 190px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--soft);
+      padding: 13px;
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #334155;
+      outline: none;
+    }
+
+    .brief-head {
+      margin: 20px 0 8px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        padding: 14px;
+      }
+
+      header,
+      .card,
+      .recommendation,
+      .side-card {
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      .category-grid,
+      .results-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .category-btn {
+        min-height: auto;
+      }
+
+      .section-head {
+        flex-direction: column;
+      }
+
+      .clear-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="wrap">
+      <header>
+        <p class="eyebrow">Jon Purchase Engine</p>
+        <h1>What should Jon buy?</h1>
+        <p>A simple decision tool that asks just enough questions to make the recommendation feel earned.</p>
+      </header>
+
+      <section class="card">
+        <h2>1. Choose a category</h2>
+        <div class="category-grid" id="categoryGrid"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>2. Narrow the logic</h2>
+            <p class="subhead">Pick up to three use cases and three priorities.</p>
+          </div>
+          <button class="clear-btn" id="clearBtn" type="button">Clear</button>
+        </div>
+
+        <div class="logic-block">
+          <span class="label">Use case</span>
+          <div class="chips" id="useCaseChips"></div>
+        </div>
+
+        <div class="logic-block">
+          <span class="label">Priorities</span>
+          <div class="chips" id="priorityChips"></div>
+        </div>
+
+        <div class="logic-block">
+          <span class="label">Decision style</span>
+          <div class="chips" id="styleChips"></div>
+        </div>
+
+        <div class="logic-block">
+          <label class="label" for="currentOption">Current alternative Jon is considering</label>
+          <input id="currentOption" placeholder="Optional" />
+        </div>
+      </section>
+
+      <section class="results-grid">
+        <div class="recommendation">
+          <div class="rec-label">Recommendation</div>
+          <h2 class="rec-name" id="winnerName"></h2>
+          <div class="rec-meta" id="winnerMeta"></div>
+          <p class="rec-description" id="winnerDescription"></p>
+
+          <div class="two-col">
+            <div>
+              <div class="mini-title">Why this works</div>
+              <ul id="caseForList"></ul>
+            </div>
+            <div>
+              <div class="mini-title">Fair objections</div>
+              <ul id="caveatsList"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h2>Compare against</h2>
+          <div class="compare-box">
+            <div class="compare-name" id="runnerName"></div>
+            <div class="compare-lane" id="runnerLane"></div>
+            <p class="compare-description" id="runnerDescription"></p>
+          </div>
+
+          <div class="brief-head">Buyer brief</div>
+          <textarea id="buyerBrief" readonly></textarea>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const CATEGORY_DATA = {
+      car: {
+        label: "Car",
+        icon: "🚙",
+        resultLabel: "Land Cruiser",
+        useCases: ["Daily driver", "Family hauler", "Ski / trail access", "Road trips", "Long-term ownership"],
+        priorities: ["Reliability", "Winter confidence", "Durability", "Cargo space", "Resale value", "Comfort", "Capability", "Low regret"],
+        options: [
+          {
+            name: "Toyota Land Cruiser",
+            lane: "The correct answer",
+            description: "The durable, capable, long-term choice that keeps making sense once Jon thinks beyond the purchase price.",
+            caseFor: ["Built for long ownership", "Excellent winter and adventure confidence", "Strong resale logic", "Feels like the car he actually wants"],
+            caveats: ["Higher purchase price", "Worse fuel economy", "More vehicle than strictly necessary"]
+          },
+          {
+            name: "Subaru Outback",
+            lane: "The reasonable objection",
+            description: "Practical, useful, and cheaper, but probably not the thing that ends the conversation forever.",
+            caseFor: ["Lower cost", "Good in snow", "Easy to live with"],
+            caveats: ["Less special", "Less durable/adventure-coded", "May restart the shopping loop later"]
+          }
+        ]
+      },
+      skis: {
+        label: "Skis",
+        icon: "🎿",
+        resultLabel: "Black Ops or Wildcat",
+        useCases: ["Powder days", "Soft chop", "Trees", "Resort laps", "Touring", "Travel ski", "Mixed conditions"],
+        priorities: ["Float", "Playfulness", "Stability", "Touring weight", "Resort durability", "Versatility", "Fun factor"],
+        options: [
+          {
+            name: "Rossignol Black Ops 118",
+            lane: "Resort powder pick",
+            description: "The answer when Jon wants maximum soft-snow fun, float, and resort-day confidence.",
+            caseFor: ["Best powder bias", "Strong resort soft-snow case", "Fun and confidence-inspiring", "Feels like a special-day ski"],
+            caveats: ["Wide for firm days", "Not the touring pick", "Less versatile than a 108"]
+          },
+          {
+            name: "Moment Wildcat Tour 108",
+            lane: "Touring / versatile pick",
+            description: "The answer when Jon wants a playful ski that can tour and still handle mixed soft-snow days.",
+            caseFor: ["More versatile width", "Better for touring", "Still playful", "Easier to justify as a frequent-use ski"],
+            caveats: ["Less float than a 118", "Tour build may not love resort abuse", "Still not a firm-snow daily driver"]
+          }
+        ]
+      },
+      bike: {
+        label: "Bike",
+        icon: "🚲",
+        resultLabel: "Moots only",
+        useCases: ["Gravel", "All-road", "Road fitness", "Bikepacking", "XC / light trail", "Long rides", "Dream bike"],
+        priorities: ["Ride quality", "Durability", "Craftsmanship", "Comfort", "Long-term ownership", "Timeless design", "Performance"],
+        options: [
+          {
+            name: "Moots Routt family",
+            lane: "Gravel / all-road pick",
+            description: "The default Moots answer if Jon wants one titanium bike for mixed surfaces, long rides, and maximum use rate.",
+            caseFor: ["Most versatile Moots lane", "Great long-ride logic", "High use rate", "Feels like a forever bike"],
+            caveats: ["Premium price", "Needs the right build", "Not a mountain bike"]
+          },
+          {
+            name: "Moots Vamoots family",
+            lane: "Road pick",
+            description: "The answer if Jon mainly wants pavement speed, group rides, and a refined titanium road bike.",
+            caseFor: ["Clean road identity", "Fast and timeless", "Comfortable for big miles", "Easy to love long-term"],
+            caveats: ["Less useful off pavement", "Narrower use case", "Build spec matters"]
+          },
+          {
+            name: "Moots Womble / MXC / Mountaineer lane",
+            lane: "Mountain pick",
+            description: "The answer if the real use case is singletrack, XC, or a titanium mountain bike that stays cool forever.",
+            caseFor: ["Best if trails are the use case", "Distinct from gravel", "Durable and special"],
+            caveats: ["More maintenance", "Needs regular trail access", "Must match local terrain"]
+          }
+        ]
+      }
+    };
+
+    const DECISION_STYLES = [
+      { key: "responsible", label: "Responsible" },
+      { key: "excited", label: "Excited" },
+      { key: "balanced", label: "Balanced" }
+    ];
+
+    const state = {
+      category: "car",
+      selectedUses: [],
+      selectedPriorities: [],
+      decisionStyle: "balanced",
+      currentOption: ""
+    };
+
+    const categoryGrid = document.getElementById("categoryGrid");
+    const useCaseChips = document.getElementById("useCaseChips");
+    const priorityChips = document.getElementById("priorityChips");
+    const styleChips = document.getElementById("styleChips");
+    const clearBtn = document.getElementById("clearBtn");
+    const currentOptionInput = document.getElementById("currentOption");
+
+    function scoreOptions() {
+      const data = CATEGORY_DATA[state.category];
+      const combined = `${state.selectedUses.join(" ")} ${state.selectedPriorities.join(" ")}`.toLowerCase();
+
+      return data.options
+        .map((option) => {
+          const text = `${option.name} ${option.lane} ${option.description}`.toLowerCase();
+          let score = 70;
+
+          if (state.category === "car" && option.name.includes("Land Cruiser")) score += 25;
+          if (state.category === "car" && option.name.includes("Outback")) score += 5;
+
+          if (state.category === "skis" && option.name.includes("Black Ops") && /powder|float|resort|soft|chop/.test(combined)) score += 20;
+          if (state.category === "skis" && option.name.includes("Wildcat") && /tour|touring|mixed|versatility|travel|weight/.test(combined)) score += 20;
+
+          if (state.category === "bike" && option.name.includes("Routt") && /gravel|all-road|bikepacking|long|comfort/.test(combined)) score += 20;
+          if (state.category === "bike" && option.name.includes("Vamoots") && /road|fitness|performance/.test(combined)) score += 20;
+          if (state.category === "bike" && /Womble|MXC|Mountaineer/.test(option.name) && /xc|trail|mountain/.test(combined)) score += 20;
+
+          if (state.decisionStyle === "responsible" && /durable|resale|long|versatile|reliable|forever/.test(`${text} ${combined}`)) score += 6;
+          if (state.decisionStyle === "excited" && /fun|special|dream|powder|moots|land cruiser/.test(`${text} ${combined}`)) score += 6;
+          if (state.decisionStyle === "balanced") score += 5;
+
+          return { ...option, score: Math.max(0, Math.min(100, Math.round(score))) };
+        })
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function clearSelections() {
+      state.selectedUses = [];
+      state.selectedPriorities = [];
+      state.decisionStyle = "balanced";
+      state.currentOption = "";
+      currentOptionInput.value = "";
+    }
+
+    function changeCategory(category) {
+      state.category = category;
+      clearSelections();
+      render();
+    }
+
+    function toggleItem(collectionName, value, max) {
+      const collection = state[collectionName];
+      const existingIndex = collection.indexOf(value);
+
+      if (existingIndex >= 0) {
+        collection.splice(existingIndex, 1);
+      } else if (collection.length < max) {
+        collection.push(value);
+      }
+
+      render();
+    }
+
+    function setDecisionStyle(key) {
+      state.decisionStyle = key;
+      render();
+    }
+
+    function makeButton(className, active, html, onClick) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `${className}${active ? " active" : ""}`;
+      button.innerHTML = html;
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    function renderCategoryButtons() {
+      categoryGrid.innerHTML = "";
+
+      Object.entries(CATEGORY_DATA).forEach(([key, value]) => {
+        const button = makeButton(
+          "category-btn",
+          state.category === key,
+          `
+            <div class="category-icon">${value.icon}</div>
+            <div class="category-title">${value.label}</div>
+            <div class="category-result">${value.resultLabel}</div>
+          `,
+          () => changeCategory(key)
+        );
+
+        categoryGrid.appendChild(button);
+      });
+    }
+
+    function renderChips(container, options, selected, onClick) {
+      container.innerHTML = "";
+
+      options.forEach((option) => {
+        const button = makeButton(
+          "chip",
+          selected.includes(option),
+          option,
+          () => onClick(option)
+        );
+        container.appendChild(button);
+      });
+    }
+
+    function renderResults() {
+      const data = CATEGORY_DATA[state.category];
+      const results = scoreOptions();
+      const winner = results[0];
+      const runnerUp = results[1];
+
+      document.getElementById("winnerName").textContent = winner.name;
+      document.getElementById("winnerMeta").textContent = `${winner.lane} · ${winner.score}% confidence`;
+      document.getElementById("winnerDescription").textContent = winner.description;
+
+      const caseForList = document.getElementById("caseForList");
+      caseForList.innerHTML = "";
+      winner.caseFor.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        caseForList.appendChild(li);
+      });
+
+      const caveatsList = document.getElementById("caveatsList");
+      caveatsList.innerHTML = "";
+      winner.caveats.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        caveatsList.appendChild(li);
+      });
+
+      document.getElementById("runnerName").textContent = runnerUp ? runnerUp.name : "";
+      document.getElementById("runnerLane").textContent = runnerUp ? runnerUp.lane : "";
+      document.getElementById("runnerDescription").textContent = runnerUp ? runnerUp.description : "";
+
+      const brief = [
+        `Category: ${data.label}`,
+        `Recommendation: ${winner.name}`,
+        `Why: ${winner.description}`,
+        state.selectedUses.length ? `Use case: ${state.selectedUses.join(", ")}` : null,
+        state.selectedPriorities.length ? `Priorities: ${state.selectedPriorities.join(", ")}` : null,
+        state.currentOption ? `Current alternative: ${state.currentOption}` : null,
+        runnerUp ? `Compare against: ${runnerUp.name}` : null
+      ].filter(Boolean);
+
+      document.getElementById("buyerBrief").value = brief.join("\n");
+    }
+
+    function render() {
+      const data = CATEGORY_DATA[state.category];
+      renderCategoryButtons();
+      renderChips(useCaseChips, data.useCases, state.selectedUses, (option) => toggleItem("selectedUses", option, 3));
+      renderChips(priorityChips, data.priorities, state.selectedPriorities, (option) => toggleItem("selectedPriorities", option, 3));
+      renderChips(styleChips, DECISION_STYLES.map((style) => style.label), [DECISION_STYLES.find((style) => style.key === state.decisionStyle).label], (label) => {
+        const style = DECISION_STYLES.find((item) => item.label === label);
+        setDecisionStyle(style.key);
+      });
+      renderResults();
+    }
+
+    clearBtn.addEventListener("click", () => {
+      clearSelections();
+      render();
+    });
+
+    currentOptionInput.addEventListener("input", (event) => {
+      state.currentOption = event.target.value;
+      renderResults();
+    });
+
+    render();
+  </script>
+</body>
+</html>
