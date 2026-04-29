@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f4f3e">
+  <title>Jon Car Decision Engine</title>
+  <style>
+    :root {
+      --bg: #f6efe2;
+      --card: #fffaf0;
+      --ink: #24211c;
+      --muted: #71695d;
+      --green: #2f4f3e;
+      --orange: #b96f2d;
+      --soft: #e7d9c4;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(185,111,45,.16), transparent 34%),
+        radial-gradient(circle at 90% 100%, rgba(47,79,62,.18), transparent 36%),
+        var(--bg);
+    }
+
+    main {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: max(18px, env(safe-area-inset-top)) 16px 28px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 12px 2px 18px;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid rgba(47,79,62,.35);
+      background: rgba(255,250,240,.7);
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(38px, 12vw, 76px);
+      line-height: .88;
+      letter-spacing: -.06em;
+      margin: 18px 0 10px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+      margin: 0 auto;
+      max-width: 560px;
+    }
+
+    .app {
+      background: rgba(255,250,240,.94);
+      border: 1px solid var(--soft);
+      border-radius: 28px;
+      box-shadow: 0 20px 44px rgba(54, 42, 23, .14);
+      overflow: hidden;
+    }
+
+    .bar {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--soft);
+      background: #fff7ea;
+      display: grid;
+      gap: 8px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .meter {
+      height: 10px;
+      background: #eadfce;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--orange));
+      transition: width .25s ease;
+    }
+
+    .panel {
+      padding: 22px 18px 20px;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 8vw, 48px);
+      line-height: .98;
+      letter-spacing: -.045em;
+      margin: 0 0 10px;
+    }
+
+    .helper {
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0 0 18px;
+    }
+
+    .options {
+      display: grid;
+      gap: 11px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 18px;
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      background: var(--white);
+      border: 1px solid var(--soft);
+      padding: 17px 16px;
+      color: var(--ink);
+      box-shadow: 0 4px 12px rgba(54, 42, 23, .05);
+    }
+
+    .option:active { transform: scale(.99); }
+
+    .option strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .option span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .result-card {
+      background: var(--green);
+      color: white;
+      border-radius: 24px;
+      padding: 24px 20px;
+      margin-bottom: 14px;
+    }
+
+    .result-card .label {
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 12px;
+      opacity: .75;
+      font-weight: 800;
+    }
+
+    .result-card h2 {
+      font-size: clamp(44px, 13vw, 82px);
+      color: white;
+      margin: 12px 0;
+    }
+
+    .result-card p {
+      font-size: 17px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .scorecard, .compare, .truth {
+      background: white;
+      border: 1px solid var(--soft);
+      border-radius: 22px;
+      padding: 18px;
+      margin-top: 12px;
+    }
+
+    .scorecard h3, .compare h3 {
+      margin: 0 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 0;
+      border-bottom: 1px solid #efe5d6;
+      font-size: 14px;
+    }
+
+    .row:last-child { border-bottom: 0; }
+
+    .row b {
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .car {
+      padding: 14px 0;
+      border-bottom: 1px solid #efe5d6;
+    }
+
+    .car:last-child { border-bottom: 0; }
+
+    .car-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 5px;
+    }
+
+    .car-title b { font-size: 18px; }
+
+    .badge {
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .car p, .truth {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+      margin-top: 14px;
+    }
+
+    @media (min-width: 560px) {
+      .actions { grid-template-columns: 1fr 1fr; }
+      .panel { padding: 30px; }
+    }
+
+    .primary, .secondary, .danger {
+      padding: 15px 16px;
+      font-weight: 850;
+      border-radius: 999px;
+    }
+
+    .primary {
+      background: var(--orange);
+      color: white;
+    }
+
+    .secondary {
+      background: #efe4d2;
+      color: var(--ink);
+    }
+
+    .danger {
+      background: white;
+      color: #8c2f20;
+      border: 1px dashed #8c2f20;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="pill">Scientifically neutral</span>
+      <h1>Jon Car Decision Engine™</h1>
+      <p class="sub">A mobile-friendly tool that objectively weighs Jon’s needs, respectfully considers the Subaru Outback, and then bravely recommends the Toyota Land Cruiser.</p>
+    </section>
+
+    <section class="app">
+      <div class="bar">
+        <div class="bar-row">
+          <span id="stepText">Step 1 of 6</span>
+          <span>Bias: undetectable</span>
+        </div>
+        <div class="meter"><div class="fill" id="fill"></div></div>
+      </div>
+
+      <div class="panel" id="quiz">
+        <h2 id="question"></h2>
+        <p class="helper" id="helper"></p>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="panel result" id="result">
+        <div class="result-card">
+          <div class="label">Final recommendation</div>
+          <h2>Land Cruiser</h2>
+          <p id="resultCopy"></p>
+        </div>
+
+        <div class="scorecard">
+          <h3>Scientific Scorecard</h3>
+          <div class="row"><span>Land Cruiser fit</span><b id="lcScore">98%</b></div>
+          <div class="row"><span>Outback practicality</span><b id="obScore">Very respectable</b></div>
+          <div class="row"><span>Adventure credibility</span><b>Land Cruiser</b></div>
+          <div class="row"><span>Regret avoidance</span><b>Land Cruiser</b></div>
+          <div class="row"><span>Final vibe check</span><b>Land Cruiser</b></div>
+        </div>
+
+        <div class="compare">
+          <h3>Vehicle Comparison</h3>
+          <div class="car">
+            <div class="car-title"><b>Toyota Land Cruiser</b><span class="badge">Correct</span></div>
+            <p>Reliable, overbuilt, mountain-ready, kid-compatible, dog-approved, and spiritually aligned with the man Jon is becoming.</p>
+          </div>
+          <div class="car">
+            <div class="car-title"><b>Subaru Outback</b><span class="badge">Nice try</span></div>
+            <p>A sensible, capable, outdoorsy wagon. Excellent for someone who wants a Land Cruiser but is still negotiating with himself.</p>
+          </div>
+        </div>
+
+        <div class="truth" id="truth">The Outback did exactly what it was supposed to do: provide a responsible alternative. Then the Land Cruiser did what it was born to do: make responsibility feel underpowered.</div>
+
+        <div class="actions">
+          <button class="primary" onclick="restart()">Run again</button>
+          <button class="secondary" onclick="outback()">But what about the Outback?</button>
+          <button class="danger" onclick="insist()">I insist on the Outback</button>
+          <button class="secondary" onclick="alternatives()">Other options?</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Methodology: proprietary blend of lifestyle analysis, resale-value vibes, and Toyota body-on-frame propaganda.</p>
+  </main>
+
+<script>
+const questions = [
+  {
+    q: "What kind of person is Jon trying to be?",
+    h: "Select the answer that feels most emotionally accurate.",
+    o: [
+      ["Reliable and prepared", 30, 8, "Preparedness is Land Cruiser coded."],
+      ["Outdoorsy but reasonable", 22, 28, "The Outback briefly surged, then the word outdoorsy betrayed it."],
+      ["Low-key but secretly cool", 34, 7, "Classic Land Cruiser psychology."],
+      ["Practical, no drama", 24, 26, "The Outback made a strong case. The Land Cruiser then drove over that case."]
+    ]
+  },
+  {
+    q: "What will Jon actually use the car for?",
+    h: "Be honest. The algorithm can smell denial.",
+    o: [
+      ["Daily driving", 21, 22, "Daily driving deserves a daily reminder of excellent taste."],
+      ["Road trips", 34, 16, "Road trips favor emotional square footage."],
+      ["Snow, trails, mountains", 40, 20, "Snow plus mountains equals Land Cruiser, with an Outback footnote."],
+      ["Mostly Costco and errands", 28, 18, "Bulk groceries are a gateway to overlanding."]
+    ]
+  },
+  {
+    q: "How does Jon feel about reliability?",
+    h: "This is where the math starts getting serious.",
+    o: [
+      ["It is my top priority", 45, 14, "Thank you for selecting Land Cruiser in sentence form."],
+      ["I want low maintenance", 25, 30, "The Outback scored well, then long-term regret entered the chat."],
+      ["I want something proven", 42, 10, "Proven is basically a Toyota family name."],
+      ["I just do not want headaches", 38, 15, "A Land Cruiser is headache avoidance with four-wheel drive."]
+    ]
+  },
+  {
+    q: "What is Jon’s budget philosophy?",
+    h: "No wrong answers. Only increasingly clear Land Cruiser answers.",
+    o: [
+      ["Buy once, cry once", 46, 5, "This is literally the Land Cruiser oath."],
+      ["Keep it sensible", 25, 32, "A brief Outback surge. The model adjusted for future envy."],
+      ["I want resale value", 44, 8, "Resale value has ruled for Land Cruiser."],
+      ["Best long-term decision", 42, 12, "Long-term thinking has a Toyota badge."]
+    ]
+  },
+  {
+    q: "How important is looking cool?",
+    h: "The tool is judgment-free, but not taste-free.",
+    o: [
+      ["Very, but quietly", 48, 5, "Quietly cool is the Land Cruiser brand architecture."],
+      ["Not important", 32, 19, "That is what cool people say before buying a Land Cruiser."],
+      ["Practical over flashy", 35, 26, "The Outback is practical. The Land Cruiser is practical with mythos."],
+      ["Dad energy, but premium", 50, 4, "No further analysis needed."]
+    ]
+  },
+  {
+    q: "Final gut check: Outback or Land Cruiser?",
+    h: "The system respects Jon’s agency while applying necessary corrective interpretation.",
+    o: [
+      ["Land Cruiser", 70, 0, "Direct, mature, correct."],
+      ["Outback", 50, 35, "The Outback selection was interpreted as Land Cruiser hesitation."],
+      ["I need to think", 55, 12, "Thinking is a pre-purchase Land Cruiser symptom."],
+      ["Something smaller", 42, 18, "Smaller is a temporary feeling."]
+    ]
+  }
+];
+
+let step = 0, lc = 0, ob = 0;
+
+function el(id){ return document.getElementById(id); }
+
+function render(){
+  const x = questions[step];
+  el("question").textContent = x.q;
+  el("helper").textContent = x.h;
+  el("stepText").textContent = `Step ${step + 1} of ${questions.length}`;
+  el("fill").style.width = `${(step / questions.length) * 100}%`;
+  el("options").innerHTML = "";
+  x.o.forEach(([label, a, b, note]) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerHTML = `<strong>${label}</strong><span>${note}</span>`;
+    btn.onclick = () => {
+      lc += a;
+      ob += b;
+      step++;
+      if (step >= questions.length) result();
+      else render();
+    };
+    el("options").appendChild(btn);
+  });
+}
+
+function result(){
+  el("fill").style.width = "100%";
+  el("stepText").textContent = "Analysis complete";
+  el("quiz").style.display = "none";
+  el("result").style.display = "block";
+  const adjustedLC = Math.min(99, Math.max(94, Math.round((lc + ob * .6) / 3.1)));
+  const adjustedOB = ob > 120 ? "Strong, but still not Land Cruiser" : "Respectable";
+  el("lcScore").textContent = adjustedLC + "%";
+  el("obScore").textContent = adjustedOB;
+  el("resultCopy").textContent = "After reviewing Jon’s stated preferences, unstated preferences, and the faint but unmistakable aroma of future regret, the tool recommends a Toyota Land Cruiser. The Subaru Outback is acknowledged as a good car, but the Land Cruiser is the better answer to who Jon is becoming.";
+}
+
+function outback(){
+  el("truth").textContent = "The Subaru Outback is thoughtful, capable, and adult. It is also what Jon buys right before spending seven years pointing at Land Cruisers and saying, “That would have been cool.”";
+}
+function insist(){
+  el("truth").textContent = "Outback-only mode has been reviewed. Result: buy the Outback if Jon wants a very good car. Buy the Land Cruiser if Jon wants the story to be better.";
+}
+function alternatives(){
+  el("truth").textContent = "Other options include the 4Runner, Lexus GX, Bronco, and Tacoma. These are categorized as: Land Cruiser adjacent, luxury Land Cruiser cousin, non-Toyota detour, and truck-shaped Land Cruiser denial.";
+}
+function restart(){
+  step = 0; lc = 0; ob = 0;
+  el("quiz").style.display = "block";
+  el("result").style.display = "none";
+  render();
+}
+render();
+</script>
+</body>
+</html>
